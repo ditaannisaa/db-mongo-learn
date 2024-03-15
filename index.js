@@ -3,8 +3,10 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-mongoose.connect('mongodb+srv://admin:admin@mgidita.fhxlrz0.mongodb.net/?retryWrites=true&w=majority&appName=MGIdita');
+mongoose.connect('mongodb+srv://admin:admin@mgidita.fhxlrz0.mongodb.net/mgi_dita?retryWrites=true&w=majority&appName=MGIdita' );
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -24,7 +26,9 @@ const UserSchema = new mongoose.Schema({
   // Create user
   app.post('/user', async (req, res) => {
     try {
+        console.log(req.body)
       await User.create(req.body);
+      
       res.status(201).json({message: 'successfully created'});
     } catch (error) {
       res.status(400).json({ error: 'Failed to create user' });
@@ -54,7 +58,7 @@ const UserSchema = new mongoose.Schema({
   });
   
   // Update user by ID
-  app.put('/users/:id', async (req, res) => {
+  app.put('/user/:id', async (req, res) => {
     try {
       const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
       if (!user) return res.status(404).json({ error: 'User not found' });
